@@ -20,7 +20,7 @@ namespace EmployeePayrollServices
         {
             Console.WriteLine("Welcome to Employee Payroll Service");
             EmployeeRepo repo = new EmployeeRepo();
-            repo.EnsureDataBaseConnection();
+            repo.GetAllEmployeeRecord();
         }
     }
 }
