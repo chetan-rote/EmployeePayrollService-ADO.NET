@@ -23,6 +23,10 @@ namespace EmployeePayrollServices
             }
             this.sqlConnection.Close();
         }
+        /// <summary>
+        /// UC2 Gets all employee record from the database.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         public void GetAllEmployeeRecord()
         {
             EmployeeModel employeeModel = new EmployeeModel();
@@ -78,6 +82,85 @@ namespace EmployeePayrollServices
             {
                 this.sqlConnection.Close();
             }
+        }
+
+        public bool AddEmployee(EmployeeModel employeeModel)
+        {
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    /// Impementing the command on the connection to add data to database table.
+                    SqlCommand sqlCommand = new SqlCommand("spAddEmployee", this.sqlConnection);
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlCommand.Parameters.AddWithValue("@Name", employeeModel.Name);
+                    sqlCommand.Parameters.AddWithValue("@Start_Date", employeeModel.start_date);
+                    sqlCommand.Parameters.AddWithValue("@Gender", employeeModel.Gender);
+                    sqlCommand.Parameters.AddWithValue("@Address", employeeModel.EmployeeAddress);
+                    sqlCommand.Parameters.AddWithValue("@Department", employeeModel.Department);
+                    sqlCommand.Parameters.AddWithValue("@Phone_Number", employeeModel.PhoneNumber);
+                    sqlCommand.Parameters.AddWithValue("@Basic_Pay", employeeModel.Basic_Pay);
+                    sqlCommand.Parameters.AddWithValue("@Deductions", employeeModel.Deductions);
+                    sqlCommand.Parameters.AddWithValue("@Taxable_Pay", employeeModel.Taxable_Pay);
+                    sqlCommand.Parameters.AddWithValue("@Income_Tax", employeeModel.Income_Tax);
+                    sqlCommand.Parameters.AddWithValue("@Net_Pay", employeeModel.Net_Pay);
+                    this.sqlConnection.Open();
+                    var result = sqlCommand.ExecuteNonQuery();
+                    this.sqlConnection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            /// Catching the null record exception.
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            /// Alway ensuring the closing of the connection.
+            finally
+            {
+                this.sqlConnection.Close();
+            }
+            return false;
+        }
+        /// <summary>
+        /// UC3 Update the salary.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="salary">The salary.</param>
+        /// <returns></returns>
+        public bool UpdateSalary(string name, Decimal salary)
+        {
+            try
+            {
+                using (sqlConnection)
+                {
+                    ///Query to update the salary in database table.
+                    string query = @"Update employee_payroll set Basic_Pay =" + salary + "where name ='" + name + "';";
+                    SqlCommand sqlCommand = new SqlCommand(query, this.sqlConnection);
+                    this.sqlConnection.Open();
+                    var result = sqlCommand.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            /// Catching the null record exception.
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            /// Alway ensuring the closing of the connection.
+            finally
+            {
+                this.sqlConnection.Close();
+            }
+            return false;
         }
     }
 }
