@@ -19,7 +19,8 @@ namespace EmployeePayrollServices
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Employee Payroll Service");
-            EmployeeRepo repo = new EmployeeRepo();            
+            EmployeeRepo repo = new EmployeeRepo();
+            SalaryUpdateModel updateModel = new SalaryUpdateModel();
             Console.WriteLine("1.Get all values\n2.Insert value\n3.Update salary");
             int choice = Convert.ToInt32(Console.ReadLine());
             switch (choice)
@@ -50,7 +51,7 @@ namespace EmployeePayrollServices
                     string name = Console.ReadLine();
                     Console.WriteLine("Enter new salary");
                     decimal salary = Convert.ToDecimal(Console.ReadLine());
-                    repo.UpdateSalary(name, salary);
+                    repo.UpdateEmployeeSalary(updateModel);
                     Console.WriteLine("Salary updated successfully");
                     break;
             }

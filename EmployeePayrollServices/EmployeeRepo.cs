@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
 namespace EmployeePayrollServices
 {
-    class EmployeeRepo
+    public class EmployeeRepo
     {
         /// Specifying the connection string from the sql server connection
         public static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=payroll_service;Integrated Security=True";
@@ -132,35 +133,54 @@ namespace EmployeePayrollServices
         /// <param name="name">The name.</param>
         /// <param name="salary">The salary.</param>
         /// <returns></returns>
-        public bool UpdateSalary(string name, Decimal salary)
+        public int UpdateEmployeeSalary(SalaryUpdateModel model)
         {
             try
             {
-                using (sqlConnection)
+                int salary = 0;
+                using (this.sqlConnection)
                 {
-                    ///Query to update the salary in database table.
-                    string query = @"Update employee_payroll set Basic_Pay =" + salary + "where name ='" + name + "';";
-                    SqlCommand sqlCommand = new SqlCommand(query, this.sqlConnection);
+                    SalaryDetailModel displayModel = new SalaryDetailModel();
+                    SqlCommand command = new SqlCommand("dbo.spUpdateSalary", this.sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id", model.SalaryId);
+                    command.Parameters.AddWithValue("@month", model.Month);
+                    command.Parameters.AddWithValue("@salary", model.EmployeeSalary);
+                    command.Parameters.AddWithValue("@EmpId", model.EmployeeId);
                     this.sqlConnection.Open();
-                    var result = sqlCommand.ExecuteNonQuery();
-                    if (result != 0)
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        return true;
+                        while (reader.Read())
+                        {
+                            displayModel.Employee_Id = reader.GetInt32(0);
+                            displayModel.EmployeeName = reader["Name"].ToString();
+                            displayModel.JobDescritption = reader["Job"].ToString();
+                            displayModel.Month = reader["salMonth"].ToString();
+                            displayModel.SalaryId = reader.GetInt32(4);
+                            displayModel.EmployeeSalary = reader.GetDecimal(5);
+                            Console.WriteLine("EmployeeId={0}\nEmployeeName={1}\nEmployeeSalary={2}\nMonth={3}\nSalaryId={5}\nJobDescription={4}", displayModel.Employee_Id, displayModel.EmployeeName, displayModel.EmployeeSalary, displayModel.Month, displayModel.JobDescritption, displayModel.SalaryId);
+                            Console.WriteLine("\n");
+                            salary = (int)displayModel.EmployeeSalary;
+
+                        }
                     }
-                    return false;
+                    else
+                    {
+                        Console.WriteLine("No data found");
+                    }
+                    reader.Close();
+                    return salary;
                 }
             }
-            /// Catching the null record exception.
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                Console.WriteLine(exception.Message);
+                throw new Exception(ex.Message);
             }
-            /// Alway ensuring the closing of the connection.
             finally
             {
                 this.sqlConnection.Close();
             }
-            return false;
         }
     }
 }
