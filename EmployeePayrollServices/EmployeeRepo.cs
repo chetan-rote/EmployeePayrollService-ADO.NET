@@ -225,12 +225,54 @@ namespace EmployeePayrollServices
                     ///closing reader and connection
                     reader.Close();
                     sqlConnection.Close();
-
                 }
                 else
                 {
                     throw new Exception("No data found");
                 }
+            }
+        }
+        /// <summary>
+        /// Get aggregate salary details by gender
+        /// </summary>
+        public void GetAggregateSalaryDetailsByGender()
+        {
+            sqlConnection = new SqlConnection(connectionString);
+            try
+            {
+                string query = @"Select Gender,SUM(Basic_Pay),AVG(Basic_Pay), MIN(Basic_Pay),MAX(Basic_Pay),COUNT(id)
+                                    from employee_payroll Group by Gender";
+
+                SqlCommand command = new SqlCommand(query, this.sqlConnection);
+                this.sqlConnection.Open();
+                SqlDataReader dr = command.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    Console.WriteLine("Gender\t\tSUM\t\tAVG\t\tMIN\t\tMAX\tCount");
+                    while (dr.Read())
+                    {
+                        string gender = dr.GetString(0);
+                        decimal SUM = dr.GetDecimal(1);
+                        decimal AVG = dr.GetDecimal(2);
+                        decimal MIN = dr.GetDecimal(3);
+                        decimal MAX = dr.GetDecimal(4);
+                        int Count = dr.GetInt32(5);
+                        Console.WriteLine(gender + "\t" + SUM + "\t" + AVG + "\t" + MIN + "\t" + MAX + "\t" + Count);
+                        Console.WriteLine("\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No such records found");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                this.sqlConnection.Close();
             }
         }
     }
