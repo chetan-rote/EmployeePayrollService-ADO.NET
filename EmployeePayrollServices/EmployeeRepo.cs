@@ -84,7 +84,11 @@ namespace EmployeePayrollServices
                 this.sqlConnection.Close();
             }
         }
-
+        /// <summary>
+        /// UC7-Adds the new employee to database.
+        /// </summary>
+        /// <param name="employeeModel">The employee model.</param>
+        /// <returns></returns>
         public bool AddEmployee(EmployeeModel employeeModel)
         {
             try
@@ -157,8 +161,8 @@ namespace EmployeePayrollServices
                             displayModel.EmployeeName = reader["Name"].ToString();
                             displayModel.JobDescritption = reader["Job"].ToString();
                             displayModel.Month = reader["salMonth"].ToString();
-                            displayModel.SalaryId = reader.GetInt32(4);
-                            displayModel.EmployeeSalary = reader.GetDecimal(5);
+                            displayModel.SalaryId = Convert.ToInt32(reader["Salary_id"]);
+                            displayModel.EmployeeSalary = reader.GetDecimal(3);
                             Console.WriteLine("EmployeeId={0}\nEmployeeName={1}\nEmployeeSalary={2}\nMonth={3}\nSalaryId={5}\nJobDescription={4}", displayModel.Employee_Id, displayModel.EmployeeName, displayModel.EmployeeSalary, displayModel.Month, displayModel.JobDescritption, displayModel.SalaryId);
                             Console.WriteLine("\n");
                             salary = (int)displayModel.EmployeeSalary;
@@ -233,7 +237,7 @@ namespace EmployeePayrollServices
             }
         }
         /// <summary>
-        /// Get aggregate salary details by gender
+        /// UC6 Get aggregate salary details by gender
         /// </summary>
         public void GetAggregateSalaryDetailsByGender()
         {

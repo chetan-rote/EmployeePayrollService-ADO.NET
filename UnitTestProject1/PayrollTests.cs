@@ -16,9 +16,9 @@ namespace EmployeePayrollTest
             EmployeeRepo employee = new EmployeeRepo();
             SalaryUpdateModel updateModel = new SalaryUpdateModel()
             {                
-                SalaryId = 2,
+                SalaryId = 11,
                 Month = "Jan",
-                EmployeeSalary = 1300,
+                EmployeeSalary = 12500,
                 EmployeeId = 2
             };
             //Act
