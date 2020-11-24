@@ -21,7 +21,8 @@ namespace EmployeePayrollServices
             Console.WriteLine("Welcome to Employee Payroll Service");
             EmployeeRepo repo = new EmployeeRepo();
             SalaryUpdateModel updateModel = new SalaryUpdateModel();
-            Console.WriteLine("1.Get all values\n2.Insert value\n3.Update salary\n4.Get Employeesby Hire Date.");
+            Console.WriteLine("1.Get all values.\n2.Insert value.\n3.Update salary.\n4.Get Employeesby Hire Date." +
+                "\n5.Get Aggregate Salary Details By Gender.");
             int choice = Convert.ToInt32(Console.ReadLine());
             switch (choice)
             {
@@ -57,6 +58,9 @@ namespace EmployeePayrollServices
 
                 case 4:
                     repo.GetAllemployeeStartedInADateRange();
+                    break;
+                case 5:
+                    repo.GetAggregateSalaryDetailsByGender();
                     break;
             }
             Console.ReadKey();
