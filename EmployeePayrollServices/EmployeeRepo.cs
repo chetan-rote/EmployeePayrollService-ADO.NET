@@ -128,7 +128,7 @@ namespace EmployeePayrollServices
             return false;
         }
         /// <summary>
-        /// UC3 Update the salary.
+        /// UC3&4 Update the salary using Stored procedure.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="salary">The salary.</param>
@@ -180,6 +180,57 @@ namespace EmployeePayrollServices
             finally
             {
                 this.sqlConnection.Close();
+            }
+        }
+        /// <summary>
+        /// UC5 Gets the allemployee started in a date range.
+        /// </summary>
+        /// <exception cref="System.Exception">No data found</exception>
+        public void GetAllemployeeStartedInADateRange()
+        {
+            ///creating a list to store all those employees
+            EmployeeModel model = new EmployeeModel();
+
+            using (sqlConnection)
+            {
+                ///Query to get Employees by the mentioned hire date.
+                string query = "select * from employee_payroll where start_date between cast('01-01-2018' as date) and getdate()";
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                ///opening connection to read.
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        model.Id = reader.GetInt32(0);
+                        model.Name = reader.GetString(1);                        
+                        model.start_date = reader.GetDateTime(2);
+                        model.Gender = reader.GetString(3);
+                        model.EmployeeAddress = reader.GetString(4);
+                        model.Department = reader.GetString(5);
+                        model.PhoneNumber = reader.GetString(6);
+                        model.Basic_Pay = reader.GetDecimal(7);                        
+                        model.Deductions = reader.GetDecimal(8);
+                        model.Taxable_Pay = reader.GetDecimal(9);
+                        model.Income_Tax = reader.GetDecimal(10);
+                        model.Net_Pay = reader.GetDecimal(11);                        
+                        Console.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", model.Id,
+                        model.Name, model.Gender, model.EmployeeAddress, model.Basic_Pay, model.start_date,
+                        model.PhoneNumber, model.Department, model.Deductions, model.Taxable_Pay,
+                        model.Income_Tax, model.Net_Pay);
+                        Console.WriteLine("\n");
+
+                    }
+                    ///closing reader and connection
+                    reader.Close();
+                    sqlConnection.Close();
+
+                }
+                else
+                {
+                    throw new Exception("No data found");
+                }
             }
         }
     }
