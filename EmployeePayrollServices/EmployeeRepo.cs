@@ -279,5 +279,42 @@ namespace EmployeePayrollServices
                 this.sqlConnection.Close();
             }
         }
+        /// <summary>
+        /// UC8 Remove employee details from table
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool RemoveEmployee(int id)
+        {
+            sqlConnection = new SqlConnection(connectionString);
+            try
+            {
+                using (sqlConnection)
+                {
+                    SqlCommand command = new SqlCommand("spDeleteEmployee", this.sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EmpId", id);
+
+                    this.sqlConnection.Open();
+
+                    var result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                       return true;
+                    }
+                    return false;
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                this.sqlConnection.Close();
+            }
+            return false;
+        }
     }
 }

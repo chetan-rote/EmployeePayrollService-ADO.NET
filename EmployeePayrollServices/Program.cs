@@ -25,7 +25,7 @@ namespace EmployeePayrollServices
             do
             {
                 Console.WriteLine("1.Get all values.\n2.Add new Employee.\n3.Update salary.\n4.Get Employeesby Hire Date." +
-                "\n5.Get Aggregate Salary Details By Gender.\n6.Exit.");
+                "\n5.Get Aggregate Salary Details By Gender.\n6.Delete record.\n7.Exit.");
 
                 choice = Convert.ToInt32(Console.ReadLine());
                 switch (choice)
@@ -69,11 +69,16 @@ namespace EmployeePayrollServices
                         repo.GetAggregateSalaryDetailsByGender();
                         break;
                     case 6:
+                        Console.WriteLine("Enter Employee Id");
+                        int id = Convert.ToInt32(Console.ReadLine());
+                        repo.RemoveEmployee(id);
+                        break;
+                    case 7:
                         Console.WriteLine("Thank you for using Employee Payroll System.");
                         break;
                 }
             }
-            while (choice != 6);
+            while (choice != 7);
             Console.ReadKey();
         }
     }
