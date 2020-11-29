@@ -137,44 +137,23 @@ namespace EmployeePayrollServices
         /// <param name="name">The name.</param>
         /// <param name="salary">The salary.</param>
         /// <returns></returns>
-        public int UpdateEmployeeSalary(SalaryUpdateModel model)
+        public bool UpdateEmployeeSalary(string name, decimal salary)
         {
             try
-            {
-                int salary = 0;
+            {                
                 using (this.sqlConnection)
                 {
-                    SalaryDetailModel displayModel = new SalaryDetailModel();
-                    SqlCommand command = new SqlCommand("dbo.spUpdateSalary", this.sqlConnection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@id", model.SalaryId);
-                    command.Parameters.AddWithValue("@month", model.Month);
-                    command.Parameters.AddWithValue("@salary", model.EmployeeSalary);
-                    command.Parameters.AddWithValue("@EmpId", model.EmployeeId);
+                    SqlCommand command = new SqlCommand("spUpdateSalary", this.sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EmpName", name);
+                    command.Parameters.AddWithValue("@NetPay", salary);
                     this.sqlConnection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-                    if (reader.HasRows)
+                    var result = command.ExecuteNonQuery();
+                    if (result != 0)
                     {
-                        while (reader.Read())
-                        {
-                            displayModel.Employee_Id = reader.GetInt32(0);
-                            displayModel.EmployeeName = reader["Name"].ToString();
-                            displayModel.JobDescritption = reader["Job"].ToString();
-                            displayModel.Month = reader["salMonth"].ToString();
-                            displayModel.SalaryId = Convert.ToInt32(reader["Salary_id"]);
-                            displayModel.EmployeeSalary = reader.GetDecimal(3);
-                            Console.WriteLine("EmployeeId={0}\nEmployeeName={1}\nEmployeeSalary={2}\nMonth={3}\nSalaryId={5}\nJobDescription={4}", displayModel.Employee_Id, displayModel.EmployeeName, displayModel.EmployeeSalary, displayModel.Month, displayModel.JobDescritption, displayModel.SalaryId);
-                            Console.WriteLine("\n");
-                            salary = (int)displayModel.EmployeeSalary;
-
-                        }
+                        return true;
                     }
-                    else
-                    {
-                        Console.WriteLine("No data found");
-                    }
-                    reader.Close();
-                    return salary;
+                    return false;
                 }
             }
             catch (Exception ex)

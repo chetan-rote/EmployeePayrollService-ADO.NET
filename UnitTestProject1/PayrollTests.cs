@@ -9,24 +9,18 @@ namespace EmployeePayrollTest
     public class PayrollTests
     {
         /// <summary>
-        /// Givens the salary details able to update salary details.
+        /// Givens the name and salary update salary should return true.
         /// </summary>
         [TestMethod]
-        public void GivenSalaryDetails_AbleToUpdateSalaryDetails()
+        public void Given_NameAndSalary_UpdateSalary_Should_Return_True()
         {
-            //Arrange
-            EmployeeRepo employee = new EmployeeRepo();
-            SalaryUpdateModel updateModel = new SalaryUpdateModel()
-            {                
-                SalaryId = 11,
-                Month = "Jan",
-                EmployeeSalary = 12500,
-                EmployeeId = 2
-            };
-            //Act
-            int EmpSalary = employee.UpdateEmployeeSalary(updateModel);
+            EmployeeRepo employeeRepo = new EmployeeRepo();
+            string name = "Terissa";
+            decimal salary = 3000000M;
 
-            Assert.AreEqual(updateModel.EmployeeSalary, EmpSalary);
+            bool result = employeeRepo.UpdateEmployeeSalary(name, salary);
+
+            Assert.AreEqual(true, result);
         }
     }
 }
